@@ -33,12 +33,16 @@ class IngresoController {
             const ingreso = req.body;
             console.log('IdUsuario:', idUser);
             console.log('Ingreso:', ingreso);
+            // Asignar el idUser al ingreso
             ingreso.IdUsuario = idUser;
             try {
-                yield database_1.default.query('INSERT INTO Ingreso SET ?', [ingreso]);
+                const result = yield database_1.default.query('INSERT INTO Ingreso SET ?', [ingreso]);
+                console.log('Resultado de la inserción:', result); // Log detallado del resultado
+                // Verificar que la inserción fue exitosa (affectedRows > 0)
                 res.json({ message: 'Ingreso guardado' });
             }
             catch (err) {
+                console.error('Error al crear el ingreso:', err); // Log detallado del error
                 res.status(500).json({ error: 'Error al crear el ingreso' });
             }
         });
@@ -64,12 +68,6 @@ class IngresoController {
             console.log('Ingreso:', ingreso);
             try {
                 const result = yield database_1.default.query(`UPDATE Ingreso SET TipoIngreso = ?, OrigenIngreso = ?, Categoria = ?, Monto = ?, FechaIngreso = ? WHERE IdIngreso = ? AND IdUsuario = ?`, [ingreso.TipoIngreso, ingreso.OrigenIngreso, ingreso.Categoria, ingreso.Monto, ingreso.FechaIngreso, id, idUser]);
-                if (result.affectedRows > 0) {
-                    res.json({ message: 'El ingreso fue actualizado' });
-                }
-                else {
-                    res.status(404).json({ error: 'El ingreso no fue encontrado o el usuario no coincide' });
-                }
             }
             catch (err) {
                 console.error(err);

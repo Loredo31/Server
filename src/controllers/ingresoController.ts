@@ -15,19 +15,29 @@ class IngresoController {
   public async create(req: Request, res: Response): Promise<void> {
     const { idUser } = req.params;
     const ingreso = req.body;
-
+  
     console.log('IdUsuario:', idUser);
     console.log('Ingreso:', ingreso);
   
+    // Asignar el idUser al ingreso
     ingreso.IdUsuario = idUser;
   
     try {
-      await pool.query('INSERT INTO Ingreso SET ?', [ingreso]);
-      res.json({ message: 'Ingreso guardado' });
+      const result = await pool.query('INSERT INTO Ingreso SET ?', [ingreso]);
+  
+      console.log('Resultado de la inserción:', result);  // Log detallado del resultado
+  
+      // Verificar que la inserción fue exitosa (affectedRows > 0)
+     
+        res.json({ message: 'Ingreso guardado' });
+      
     } catch (err) {
+      console.error('Error al crear el ingreso:', err);  // Log detallado del error
       res.status(500).json({ error: 'Error al crear el ingreso' });
     }
   }
+  
+  
 
   public async delete(req: Request, res: Response): Promise<void> {
     const { id, idUser } = req.params;
@@ -51,12 +61,7 @@ class IngresoController {
       const result = await pool.query(`UPDATE Ingreso SET TipoIngreso = ?, OrigenIngreso = ?, Categoria = ?, Monto = ?, FechaIngreso = ? WHERE IdIngreso = ? AND IdUsuario = ?`,
         [ingreso.TipoIngreso, ingreso.OrigenIngreso, ingreso.Categoria, ingreso.Monto, ingreso.FechaIngreso, id, idUser]
       );
-      
-      if (result.affectedRows > 0) {
-        res.json({ message: 'El ingreso fue actualizado' });
-      } else {
-        res.status(404).json({ error: 'El ingreso no fue encontrado o el usuario no coincide' });
-      }
+       
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Error al actualizar el ingreso' });

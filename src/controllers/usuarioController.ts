@@ -22,16 +22,16 @@ class UsuarioController {
             const { Correo, Usuario } = req.body;
 
             // Verificar si el correo ya está registrado
-            if (await this.isCorreoExists(Correo)) {
-                res.status(400).json({ error: 'Correo electrónico ya registrado' });
-                return;
-            }
+            // if (await this.isCorreoExists(Correo)) {
+            //     res.status(400).json({ error: 'Correo electrónico ya registrado' });
+            //     return;
+            // }
 
-            // Verificar si el nombre de usuario ya está registrado
-            if (await this.isUsuarioExists(Usuario)) {
-                res.status(400).json({ error: 'Nombre de usuario ya registrado' });
-                return;
-            }
+            // // Verificar si el nombre de usuario ya está registrado
+            // if (await this.isUsuarioExists(Usuario)) {
+            //     res.status(400).json({ error: 'Nombre de usuario ya registrado' });
+            //     return;
+            // }
 
             // Si las verificaciones pasan, insertar el nuevo usuario
             await pool.query('INSERT INTO Usuario SET ?', [req.body]);
